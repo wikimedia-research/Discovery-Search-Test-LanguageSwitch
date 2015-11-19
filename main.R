@@ -10,22 +10,22 @@ main <- function(){
   retrieve_data <- function(){
     
     files <- list.files("/a/mw-log/archive/CirrusSearchUserTesting", pattern = "CirrusSearchUserTesting\\.log-201511", full.names = TRUE)
-    files <- files[1:7]
+    # files <- files[1:7]
     
     results <- lapply(files, function(x){
       file <- tempfile()
       system(paste("gunzip -c ", x, ">", file))
       
       data <- readr::read_tsv(file,
-                              col_names = c("wiki", "group", "queries", "results", "source", "time_taken", "ip",
+                              col_names = c("date", "group", "queries", "results", "source", "time_taken", "ip",
                                             "user_agent", "query_metadata"),
                               col_types = "ccciciccc")
       file.remove(file)
       data <- as.data.table(data[grepl(x = data$query_metadata, pattern = "full_text", fixed = TRUE), ])
       data <- data[!data$user_agent == "",]
       data$results <- ifelse(data$results == 0, 0, 1)
-      data$wiki <- as.Date(substring(data$wiki, 0, 10))
-      data <- data[,j=list(events=.N), by = c("wiki","group", "source", "results")]
+      data$date <- as.Date(substring(data$date, 0, 10))
+      data <- data[,j=list(events=.N), by = c("date","group", "source", "results")]
       gc()
       return(data)
     })
@@ -35,10 +35,10 @@ main <- function(){
   # Explore
   eda <- function(data){
     
-    data <- data[data$wiki %in% seq(as.Date("2015-11-03"), as.Date("2015-11-09"), "day"),]
-    per_group <- data[, j = list(events = sum(events)), by = c("wiki", "group")]
+    data <- data[data$date %in% seq(as.Date("2015-11-03"), as.Date("2015-11-09"), "day"),]
+    per_group <- data[, j = list(events = sum(events)), by = c("date", "group")]
     ggsave(file = "events_by_group_summary.png",
-           plot = ggplot(per_group, aes(wiki, events, group = group, type = group, colour = group)) + geom_line() +
+           plot = ggplot(per_group, aes(date, events, group = group, type = group, colour = group)) + geom_line() +
              theme_fivethirtynine() + labs(title = "Events by day and group, Language switching test",
                                            x = "Date", y = "Events"))
     
