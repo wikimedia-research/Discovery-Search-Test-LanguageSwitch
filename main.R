@@ -59,14 +59,36 @@ main <- function(){
   high_level <- high_level[order(high_level$results, high_level$group, decreasing = T),]
   count_table <- matrix(data = high_level$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(high_level$group),
                                                                                 "Outcome" = c("Results", "Zero results")))
-  ci_prop_diff_tail(count_table)
-  ci_relative_risk(count_table)
+  ci_prop_diff_tail(count_table) # -0.04325084 -0.04270128
+  ci_relative_risk(count_table) # 0.9460554 1.0413982
+  # Overall the test group is neither more nor less likely to get results.
+  
   web <- data[data$source == "web", j = sum(events), by = c("results", "group")]
   web <- web[order(web$results, web$group, decreasing = T),]
-  count <- matrix(data = web$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(web$group),
+  count_web <- matrix(data = web$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(web$group),
                                                                                "Outcome" = c("Results", "Zero results")))
-  ci_prop_diff_tail(count)
-  ci_relative_risk(count)
-
+  ci_prop_diff_tail(count_web) # 0.002660514 0.003836064
+  ci_relative_risk(count_web) # 1.003332 1.004799
+  # Queries made via web using language detection were more likely to get results. 
+  
+  api <- data[data$source == "api", j = sum(events), by = c("results", "group")]
+  api <- api[order(api$results, api$group, decreasing = T),]
+  count_api <- matrix(data = api$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(api$group),
+                                                                               "Outcome" = c("Results", "Zero results")))
+  ci_prop_diff_tail(count_api) # -0.05580459 -0.05518439
+  ci_relative_risk(count_api) # 0.9304791 1.0243534
+  # Queries made via api using language detection were neither more nor less likely to get results. 
+  
+  # Out of curiosity...
+  sources <- data[, j = sum(events), by = c("results", "source")]
+  sources <- sources[order(sources$results, sources$source, decreasing = T),]
+  count_sources <- matrix(data = sources$V1, nrow = 2, byrow = FALSE, dimnames=list("Source" = unique(sources$source),
+                                                                               "Outcome" = c("Results", "Zero results")))
+  ci_prop_diff_tail(count_sources) # 0.02286115 0.02352183
+  ci_relative_risk(count_sources) # 1.029438 1.030292
+  # Queries made via web were more likely to get results.
+  
+  # Queries coming from API make up such a large group that they actually overpower the effect that is present
+  # within the 'queries via web' group.
   
 }
