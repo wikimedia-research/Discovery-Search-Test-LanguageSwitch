@@ -9,7 +9,7 @@ main <- function(){
   # Get
   retrieve_data <- function(){
     
-    files <- list.files("/a/mw-log/archive/", pattern = "CirrusSearchUserTesting\\.log-201511", full.names = TRUE)
+    files <- list.files("/a/mw-log/archive/CirrusSearchUserTesting", pattern = "CirrusSearchUserTesting\\.log-201511", full.names = TRUE)
     files <- files[1:7]
     
     results <- lapply(files, function(x){
