@@ -13,7 +13,7 @@ In practice, we found no evidence that this had a substantial impact on the zero
 
 One of the core goals of the Discovery team is to improve the Zero Results Rate - the proportion of user searches that return no results. After examining failed queries we noticed that some queries were perfectly valid, but simply in the wrong language; accordingly, we concluded that if we *detected* the user's language and re-ran their query, over indexes in that language, we would be able to reduce the zero results rate.
 
-We launched a test that collected data from 4 November 2015 to 11 November 2015, running over ..... Half of the search sessions (the control group) were given the *status quo*; half (the test group) would have language detection methods and a second search query if their query produced 0 results. Over a week of testing this produced 25,348,283 events.
+We launched a test that collected data from 4 November 2015 to 11 November 2015, running over 1 in 10 queries. Half of the search queries (the control group) were given the *status quo*; half (the test group) would have language detection methods and a second search query if their query produced 0 results. Over a week of testing this produced 25,348,283 events.
 
 ## Exploratory analysis
 
@@ -21,7 +21,11 @@ Our first task is to explore the data to make sure, amongst other things, that s
 
 First, we looked at things on a by-day basis; for each day in the test, how many events do we have in each group?
 
+![Fig1](events_by_group_summary.png)
+
 What this shows is that sampling is indeed uneven; the control group gets significantly more events than the test group (although both are still large enough to rely on).
+
+![Fig2](events_by_source_summary.png)
 
 Diving deeper into the data we see that the discrepancy is caused by queries from the API; queries through the web interface (which are more likely to be "user" queries) are pretty much even. Accordingly we will look at both the outcome for the test as a whole, and the outcome for just "web" queries.
 
