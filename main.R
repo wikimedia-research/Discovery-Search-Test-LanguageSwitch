@@ -54,13 +54,16 @@ main <- function(){
   
   data <- eda(retrieve_data())
   data$group <- ifelse(data$group == "multilang-b", "Test", "Control")
+  
   # Generate high-level aggregate
   high_level <- data[, j = sum(events), by = c("results", "group")]
-  high_level <- high_level[order(high_level$results, high_level$group, decreasing = T),]
+  high_level <- high_level[order(high_level$rsyesults, high_level$group, decreasing = T),]
   count_table <- matrix(data = high_level$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(high_level$group),
                                                                                 "Outcome" = c("Results", "Zero results")))
   ci_prop_diff_tail(count_table)
   ci_relative_risk(count_table)
+  
+  # Split out web only and look at that.
   web <- data[data$source == "web", j = sum(events), by = c("results", "group")]
   web <- web[order(web$results, web$group, decreasing = T),]
   count <- matrix(data = web$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(web$group),
