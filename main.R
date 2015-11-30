@@ -60,12 +60,9 @@ main <- function(){
   high_level <- high_level[order(high_level$results, high_level$group, decreasing = T),]
   count_table <- matrix(data = high_level$V1, nrow = 2, byrow = FALSE, dimnames=list("Group" = unique(high_level$group),
                                                                                 "Outcome" = c("Results", "Zero results")))
-  ci_prop_diff_tail(count_table)
-  ci_relative_risk(count_table)
-  
-  # Split out web only and look at that.
   ci_prop_diff_tail(count_table) # -0.04325084 -0.04270128
   ci_relative_risk(count_table) # 0.9460554 1.0413982
+  
   # Overall the test group is neither more nor less likely to get results.
   
   web <- data[data$source == "web", j = sum(events), by = c("results", "group")]
